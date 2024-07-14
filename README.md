@@ -53,7 +53,7 @@ const App = () => {
 export default App;
 ```
 
-crop 옵션 사용 시 주의점
+### crop 옵션 사용 시 주의점
 이미지 빈도: crop 옵션은 사용자가 크롭 영역을 조작할 때마다 매우 빈번하게 발생할 수 있다.
 따라서 성능 저하를 방지하기 위한 처리를 해야 한다.
 
@@ -61,3 +61,5 @@ crop 옵션 사용 시 주의점
 
 >debounce 함수는 지정된 delay 시간 동안 호출을 지연시키고, 그 시간 동안 다시 호출될 경우 이전 호출을 취소하고 새로 타이머를 시작한다.
 이를 통해 크롭 이벤트가 빈번하게 발생하더라도 호출 빈도가 줄어들어 성능 문제가 해결된다.
+
+[npm-react-cropper](https://www.npmjs.com/package/react-cropper)
