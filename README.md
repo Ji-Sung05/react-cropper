@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+![crop](https://github.com/user-attachments/assets/6b0ae098-0a30-4a23-aaef-c56c7a06dc15)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+이미지에서 원하는 부분만 크롭하고 싶을 때 react-cropper 라이브러리를 사용하면 간단하게 구현할 수 있다.
 
-## Available Scripts
+react-cropper는 대표적인 JavaScript 크로핑 라이브러리인 cropper.js를 리액트용으로 포장한 버전이다. 이는 다양한 기능과 설정 옵션을 제공한다.
 
-In the project directory, you can run:
+라이브러리 설치
+`npm i react-cropper`
 
-### `npm start`
+![crop해결](https://github.com/user-attachments/assets/536902f8-1e54-4e5e-8c43-ef9098de2298)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+코드
+```javaScript
+import React, { useRef } from "react";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
 
-### `npm test`
+const App = () => {
+  const cropperRef = useRef(null);
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  const onCrop = debounce(() => {
+    const cropper = cropperRef.current?.cropper;
+    if (cropper) {
+      console.log(cropper.getCroppedCanvas().toDataURL());
+    }
+  }, 200);
 
-### `npm run build`
+  return (
+    <Cropper
+      src="https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg"
+      style={{ height: 400, width: "100%" }}
+      // Cropper.js options
+      initialAspectRatio={16 / 9}
+      guides={false}
+      crop={onCrop}
+      ref={cropperRef}
+    />
+  );
+};
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+export default App;
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+crop 옵션 사용 시 주의점
+이미지 빈도: crop 옵션은 사용자가 크롭 영역을 조작할 때마다 매우 빈번하게 발생할 수 있다.
+따라서 성능 저하를 방지하기 위한 처리를 해야 한다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+이미지 품질: getCroppedCanvas 메서드를 사용하여 캔버스 데이터를 가져올 때, 해상도와 이미지 품질을 적절히 설정해야 한다.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+>debounce 함수는 지정된 delay 시간 동안 호출을 지연시키고, 그 시간 동안 다시 호출될 경우 이전 호출을 취소하고 새로 타이머를 시작한다.
+이를 통해 크롭 이벤트가 빈번하게 발생하더라도 호출 빈도가 줄어들어 성능 문제가 해결된다.
